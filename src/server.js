@@ -1,6 +1,6 @@
 // Create express app
 var express = require("express")
-var Quote = require("./quote.js")
+var db = require("./quote.js")
 
 var app = express()
 
@@ -15,40 +15,37 @@ app.get("/", (req, res, next) => {
     res.json({"message":"Ok"})
 });
 
+function sendQuote(res, category = "random"){
+  let sql = "select * from quotes";
+  let params = [];
+
+  if (category != "random") {
+    sql += " where category = ?";
+    params.push(category);
+  }
+
+  db.all(sql, params, (err, quotes) => {
+    if (err) {
+      res.status(400).json({"error": err.message});
+      return;
+    }
+
+    let index = Math.floor(Math.random() * quotes.length);
+
+    res.json({
+      "message":"success",
+      "data": quotes[index]
+    })
+  });
+}
+
 // API endpoints
-app.get("/api/quotes", (req, res, next) => {
-  // var sql = "select * from quotes"
-  // var params = []
-  // db.get(sql, params, (err, quote) => {
-  //   if (err) {
-  //     res.status(400).json({"error":err.message});
-  //     return;
-  //   }
-  //   console.log(quote);
-  //   res.json({
-  //       "message": "success",
-  //       "data": quote
-  //   })
-  // });
-  let q = new Quote(res);
-  q.sendQuote();
+app.get("/api/quote", (req, res, next) => {
+  sendQuote(res);
 });
 
-app.get("/api/user/:category", (req, res, next) => {
-  // var sql = "select * from user where id = ?"
-  // var params = [req.params.id]
-  // db.get(sql, params, (err, row) => {
-  //     if (err) {
-  //       res.status(400).json({"error":err.message});
-  //       return;
-  //     }
-  //     res.json({
-  //         "message":"success",
-  //         "data":row
-  //     })
-  //   });
-  let q = new Quote(res, req.params.category);
-  q.sendQuote();
+app.get("/api/quote/:category", (req, res, next) => {
+  sendQuote(res, req.params.category);
 });
 
 // Default response for any other request

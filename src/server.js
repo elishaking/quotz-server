@@ -29,6 +29,9 @@ function sendQuote(res, category = "random", length = "random"){
       sql += " AND length = ?";
       params.push(length);
     }
+  } else if (length != "random") {
+    sql += " where length = ?";
+    params.push(length);
   }
 
   db.all(sql, params, (err, quotes) => {

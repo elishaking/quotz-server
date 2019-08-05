@@ -18,6 +18,21 @@ app.get("/", (req, res, next) => {
 function sendQuote(res, category = "random", length = "random"){
   console.log("sending quote");
 
+  const categories = [
+    "random",
+    "inspirational",
+    "motivational",
+    "happiness",
+    "frienship",
+    "family",
+    "funny",
+    "spiritual",
+    "nature",
+    "love",
+    "work",
+    "attitude",
+  ];
+
   let sql = "select * from quotes";
   let params = [];
 

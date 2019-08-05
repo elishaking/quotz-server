@@ -15,9 +15,7 @@ app.get("/", (req, res, next) => {
     res.json({"message":"Ok"})
 });
 
-function sendQuote(res, category = "random", length = "random"){
-  console.log("sending quote");
-
+function isCategory(category){
   const categories = [
     "random",
     "inspirational",
@@ -33,18 +31,32 @@ function sendQuote(res, category = "random", length = "random"){
     "attitude",
   ];
 
+  return categories.indexOf(category) != -1;
+}
+
+function isLength(length){
+  const lengths = [
+    "short", "medium", "long"
+  ];
+
+  return lengths.indexOf(length) != -1;
+}
+
+function sendQuote(res, category = "random", length = "random"){
+  console.log("sending quote");
+
   let sql = "select * from quotes";
   let params = [];
 
-  if (category != "random") {
+  if (category != "random" && isCategory(category)) {
     sql += " where category = ?";
     params.push(category);
 
-    if (length != "random") {
+    if (length != "random" && isLength(length)) {
       sql += " AND length = ?";
       params.push(length);
     }
-  } else if (length != "random") {
+  } else if (length != "random" && isLength(length)) {
     sql += " where length = ?";
     params.push(length);
   }

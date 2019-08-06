@@ -68,6 +68,7 @@ function sendQuote(res, category = "random", length = "random"){
     }
 
     let index = Math.floor(Math.random() * quotes.length);
+    console.log(quotes);
 
     res.json({
       "message":"success",
@@ -80,9 +81,30 @@ function sendQuote(res, category = "random", length = "random"){
 // app.get("/api/quote", (req, res, next) => {
 //   sendQuote(res);
 // });
+app.get("/api/quote/", (req, res, next) => {
+  console.log(req.params);
+  if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
+    res.json({
+      "error": "Not Authorized"
+    });
+    return;
+  }
+  sendQuote(res);
+});
+
+app.get("/api/quote/:category/", (req, res, next) => {
+  console.log(req.params);
+  if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
+    res.json({
+      "error": "Not Authorized"
+    });
+    return;
+  }
+  sendQuote(res, req.params.category);
+});
 
 app.get("/api/quote/:category/:length", (req, res, next) => {
-  // console.log(req.params);
+  console.log(req.params);
   if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
     res.json({
       "error": "Not Authorized"

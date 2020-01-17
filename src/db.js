@@ -6,17 +6,17 @@ const SHORT = 70;
 const MEDIUM = 150;
 // const LONG = 200;
 
-function getLength(length){
-  if(length <= SHORT) return "short";
-  if(length > SHORT && length <= MEDIUM) return "medium";
-  
+function getLength(length) {
+  if (length <= SHORT) return "short";
+  if (length > SHORT && length <= MEDIUM) return "medium";
+
   return "long";
 }
 
 let db = new sqlite3.Database(DBSOURCE, (err) => {
   if (err) {
     // Cannot open database
-    console.error("20: " + err.message)
+    console.error("err: " + err.message)
     throw err
   } else {
     console.log('Connected to the SQLite database.')

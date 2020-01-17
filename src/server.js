@@ -5,17 +5,17 @@ var db = require("./quote.js")
 var app = express()
 
 // Server port
-var HTTP_PORT = 8000 
+var HTTP_PORT = 8000
 // Start server
 app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+  console.log(`Server running on port ${HTTP_PORT}`)
 });
 // Root endpoint
 app.get("/", (req, res, next) => {
-    res.json({"message":"Ok"})
+  res.json({ "message": "Ok" })
 });
 
-function isCategory(category){
+function isCategory(category) {
   const categories = [
     "random",
     "inspirational",
@@ -34,7 +34,7 @@ function isCategory(category){
   return categories.indexOf(category) != -1;
 }
 
-function isLength(length){
+function isLength(length) {
   const lengths = [
     "short", "medium", "long"
   ];
@@ -42,7 +42,7 @@ function isLength(length){
   return lengths.indexOf(length) != -1;
 }
 
-function sendQuote(res, category = "random", length = "random"){
+function sendQuote(res, category = "random", length = "random") {
   console.log("sending quote");
 
   let sql = "select * from quotes";
@@ -63,17 +63,30 @@ function sendQuote(res, category = "random", length = "random"){
 
   db.all(sql, params, (err, quotes) => {
     if (err) {
-      res.status(400).json({"error": err.message});
+      res.status(400).json({ "error": err.message });
       return;
     }
+    // console.log(quotes);
 
-    let index = Math.floor(Math.random() * quotes.length);
-    console.log(quotes);
-
-    res.json({
-      "message":"success",
-      "data": quotes[index]
-    })
+    if (quotes.length == 0) {
+      db.all(sql.replace(" AND length = " + length, ""), [category], (err, quotes) => {
+        if (err) {
+          res.status(400).json({ "error": err.message });
+          return;
+        }
+        let index = Math.floor(Math.random() * quotes.length);
+        res.json({
+          "message": "success",
+          "data": quotes[index]
+        });
+      });
+    } else {
+      let index = Math.floor(Math.random() * quotes.length);
+      res.json({
+        "message": "success",
+        "data": quotes[index]
+      });
+    }
   });
 }
 
@@ -83,7 +96,7 @@ function sendQuote(res, category = "random", length = "random"){
 // });
 app.get("/api/quote/", (req, res, next) => {
   console.log(req.params);
-  if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
+  if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
     res.json({
       "error": "Not Authorized"
     });
@@ -94,7 +107,7 @@ app.get("/api/quote/", (req, res, next) => {
 
 app.get("/api/quote/:category/", (req, res, next) => {
   console.log(req.params);
-  if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
+  if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
     res.json({
       "error": "Not Authorized"
     });
@@ -105,7 +118,7 @@ app.get("/api/quote/:category/", (req, res, next) => {
 
 app.get("/api/quote/:category/:length", (req, res, next) => {
   console.log(req.params);
-  if(req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
+  if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
     res.json({
       "error": "Not Authorized"
     });
@@ -115,6 +128,6 @@ app.get("/api/quote/:category/:length", (req, res, next) => {
 });
 
 // Default response for any other request
-app.use(function(req, res){
-    res.status(404);
+app.use(function (req, res) {
+  res.status(404);
 });

@@ -1,4 +1,3 @@
-// Create express app
 const express = require("express");
 const QuoteUtil = require('./src/utils/quote');
 
@@ -8,9 +7,7 @@ const app = express();
 const HTTP_PORT = 8000;
 
 // Root endpoint
-app.get("/", (_, res) => {
-  res.json({ "message": "Ok" })
-});
+app.get("/", (_, res) => res.json({ "message": "Ok" }));
 
 // API endpoints
 app.get("/api/quote/", (req, res) => {
@@ -47,10 +44,6 @@ app.get("/api/quote/:category/:length", (req, res) => {
 });
 
 // Default response for any other request
-app.use(function (_, res) {
-  res.status(404);
-});
+app.use((_, res) => res.status(404));
 
-app.listen(HTTP_PORT, () => {
-  console.log(`Server running on port ${HTTP_PORT}`);
-});
+app.listen(HTTP_PORT, () => console.log(`Server running on port ${HTTP_PORT}`));

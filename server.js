@@ -1,6 +1,6 @@
 // Create express app
 var express = require("express")
-var db = require("./quote.js")
+var db = require("./src/quote.js")
 
 var app = express()
 

@@ -4,12 +4,8 @@ var db = require("./src/db.js")
 
 var app = express()
 
-// Server port
 var HTTP_PORT = 8000
-// Start server
-app.listen(HTTP_PORT, () => {
-  console.log(`Server running on port ${HTTP_PORT}`)
-});
+
 // Root endpoint
 app.get("/", (req, res, next) => {
   res.json({ "message": "Ok" })
@@ -91,13 +87,10 @@ function sendQuote(res, category = "random", length = "random") {
 }
 
 // API endpoints
-// app.get("/api/quote", (req, res, next) => {
-//   sendQuote(res);
-// });
-app.get("/api/quote/", (req, res, next) => {
-  console.log(req.params);
+app.get("/api/quote/", (req, res) => {
+  // console.log(req.params);
   if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
-    res.json({
+    res.status(401).json({
       "error": "Not Authorized"
     });
     return;
@@ -105,10 +98,10 @@ app.get("/api/quote/", (req, res, next) => {
   sendQuote(res);
 });
 
-app.get("/api/quote/:category/", (req, res, next) => {
-  console.log(req.params);
+app.get("/api/quote/:category/", (req, res) => {
+  // console.log(req.params);
   if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
-    res.json({
+    res.status(401).json({
       "error": "Not Authorized"
     });
     return;
@@ -116,10 +109,10 @@ app.get("/api/quote/:category/", (req, res, next) => {
   sendQuote(res, req.params.category);
 });
 
-app.get("/api/quote/:category/:length", (req, res, next) => {
-  console.log(req.params);
+app.get("/api/quote/:category/:length", (req, res) => {
+  // console.log(req.params);
   if (req.headers.authorization != "Bearer: dU7n@#s3ls/'sj8ksjdmV%42wx'ldjvs&8*AjskU") {
-    res.json({
+    res.status(401).json({
       "error": "Not Authorized"
     });
     return;
@@ -128,6 +121,10 @@ app.get("/api/quote/:category/:length", (req, res, next) => {
 });
 
 // Default response for any other request
-app.use(function (req, res) {
+app.use(function (_, res) {
   res.status(404);
+});
+
+app.listen(HTTP_PORT, () => {
+  console.log(`Server running on port ${HTTP_PORT}`);
 });
